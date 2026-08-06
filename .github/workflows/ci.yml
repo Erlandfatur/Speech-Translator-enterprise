@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  extension-lint-build:
+    name: Extension (lint + build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: extension
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: extension/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build extension
+        run: npm run build:ext
+
+      - name: Build web
+        run: npm run build:web
+
+  python-smoke:
+    name: Server (Python compile + import)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Compile only — no API keys and no audio device needed.
+      # Importing `main` would instantiate sounddevice/torch.hub which fails headless.
+      - name: Byte-compile all modules
+        run: python -m compileall -q main.py pipeline
+
+      - name: Import pure pipeline modules
+        run: python -c "import pipeline.nmt, pipeline.edge_tts_engine; print('pure modules import OK')"
