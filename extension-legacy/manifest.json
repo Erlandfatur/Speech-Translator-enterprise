@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Speech Translator for Meetings (MS Teams, Meet, Zoom)",
+  "version": "1.0.0",
+  "description": "Real-time bidirectional 1-on-1 speech & subtitle translator for MS Teams, Google Meet, and Zoom Web.",
+  "permissions": [
+    "tabCapture",
+    "activeTab",
+    "storage",
+    "scripting",
+    "offscreen"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "ws://localhost:8000/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Speech Translator Settings"
+  }
+}

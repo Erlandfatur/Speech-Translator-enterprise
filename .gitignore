@@ -1,0 +1,29 @@
+# Environment / secrets
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+
+# Models / audio artifacts
+server/models/
+*.wav
+*.mp3
+!test.mp3
+
+# Node / build
+node_modules/
+dist/
+*.tsbuildinfo
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Speech Translator for Meetings (Enterprise)",
+  "version": "1.0.0",
+  "description": "Enterprise-grade real-time bidirectional translator.",
+  "permissions": [
+    "tabCapture",
+    "activeTab",
+    "storage",
+    "scripting",
+    "offscreen"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "ws://localhost:8000/*"
+  ],
+  "background": {
+    "service_worker": "src/background.ts"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": ["src/content.tsx"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Speech Translator Settings"
+  }
+}
