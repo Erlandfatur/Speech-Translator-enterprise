@@ -9,7 +9,6 @@
       --bg: #ffffff;
       --fg: #0a0a0a;
       --muted: #6b6b6b;
-      --faint: #d4d4d4;
       --hair: #e5e5e5;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -18,171 +17,217 @@
       font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
       background: var(--bg);
       color: var(--fg);
-      min-height: 100vh;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
-    .wrap { max-width: 820px; margin: 0 auto; padding: 88px 28px 48px; }
 
-    /* Nav */
+    /* ===== Nav ===== */
     nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--hair);
-      padding: 18px 28px;
-      position: sticky;
-      top: 0;
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(8px);
-      z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--hair); padding: 18px 28px;
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(10px);
     }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 0.95rem; letter-spacing: -0.01em; }
-    .mark {
-      width: 24px; height: 24px; border: 1.5px solid var(--fg);
-      display: flex; align-items: center; justify-content: center; border-radius: 5px;
-    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -0.01em; }
+    .mark { width: 24px; height: 24px; border: 1.5px solid var(--fg); display: flex; align-items: center; justify-content: center; border-radius: 5px; }
     .mark svg { width: 13px; height: 13px; }
-    nav a { color: var(--muted); text-decoration: none; font-size: 0.85rem; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 0.85rem; transition: color .15s; }
     nav a:hover { color: var(--fg); }
 
-    /* Hero */
+    .wrap { max-width: 920px; margin: 0 auto; padding: 80px 28px 48px; }
+
+    /* ===== Reveal ===== */
+    .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    .d1 { transition-delay: .1s } .d2 { transition-delay: .2s } .d3 { transition-delay: .3s } .d4 { transition-delay: .4s }
+
+    /* ===== Hero ===== */
     .kicker {
-      font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--muted); font-weight: 600; margin-bottom: 28px;
+      font-size: .72rem; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--muted); font-weight: 600; margin-bottom: 26px;
     }
-    h1 {
-      font-size: clamp(2.4rem, 7vw, 4rem);
-      font-weight: 800;
-      letter-spacing: -0.035em;
-      line-height: 1.05;
-      margin-bottom: 24px;
-    }
-    .sub {
-      color: var(--muted);
-      font-size: 1.1rem;
-      max-width: 560px;
-      margin-bottom: 44px;
-    }
+    h1 { font-size: clamp(2.4rem, 7vw, 4rem); font-weight: 800; letter-spacing: -.035em; line-height: 1.02; margin-bottom: 20px; }
+    h1 .caret { display: inline-block; width: 2px; height: .9em; background: var(--fg); vertical-align: text-bottom; margin-left: 2px; animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .sub { color: var(--muted); font-size: 1.1rem; max-width: 560px; margin-bottom: 40px; }
+
+    .row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 64px; }
     .cta {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--fg); color: var(--bg);
-      border: 1px solid var(--fg);
-      padding: 14px 28px; border-radius: 6px;
-      font-size: 0.9rem; font-weight: 600; letter-spacing: 0.01em;
-      cursor: pointer; transition: all 0.15s ease; text-decoration: none;
+      background: var(--fg); color: var(--bg); border: 1px solid var(--fg);
+      padding: 14px 26px; border-radius: 6px; font-size: .9rem; font-weight: 600;
+      cursor: pointer; text-decoration: none; position: relative; overflow: hidden;
     }
-    .cta:hover { background: #262626; }
     .cta.outline { background: transparent; color: var(--fg); }
-    .cta.outline:hover { background: var(--hair); }
-    .row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .cta .ripple { position: absolute; border-radius: 50%; background: rgba(255,255,255,.35); transform: scale(0); animation: ripple .6s ease-out; pointer-events: none; }
+    .cta.outline .ripple { background: rgba(0,0,0,.15); }
+    @keyframes ripple { to { transform: scale(4); opacity: 0; } }
 
-    /* Sections */
-    .section { margin: 88px 0; }
-    .label {
-      font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--muted); font-weight: 600; margin-bottom: 20px;
+    /* ===== Demo panel ===== */
+    .demo {
+      border: 1px solid var(--fg); border-radius: 12px; padding: 26px;
+      margin: 8px 0 20px; background: #fafafa;
     }
-    h2 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 24px; }
+    .demo-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+    .demo-label { font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+    .indicator { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--muted); }
+    .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); transition: background .2s; }
+    .pulse.live { background: var(--fg); animation: pulse 1.2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(10,10,10,.4);} 50% { box-shadow: 0 0 0 6px rgba(10,10,10,0);} }
 
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .lang-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; margin-bottom: 20px; }
+    .lang-box { text-align: center; }
+    .lang-box small { display: block; font-size: .68rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .lang-box select {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--hair); border-radius: 6px;
+      background: #fff; font-size: .9rem; color: var(--fg); cursor: pointer; outline: none;
+    }
+    .lang-box select:focus { border-color: var(--fg); }
+    .swap {
+      width: 34px; height: 34px; border: 1px solid var(--hair); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      color: var(--fg); background: #fff; transition: transform .3s ease; font-size: .9rem;
+    }
+    .swap:hover { transform: rotate(180deg); }
+
+    /* wave */
+    .wave {
+      height: 60px; display: flex; align-items: center; justify-content: center; gap: 4px;
+      margin-bottom: 22px; min-height: 60px;
+    }
+    .wave .bar { width: 3px; background: var(--fg); border-radius: 3px; }
+    .wave .bar.on { animation: bounce .8s ease-in-out infinite; }
+    .wave .bar.off { background: var(--hair); height: 4px !important; }
+    @keyframes bounce { 0%,100% { height: 6px; } 50% { height: 48px; } }
+
+    .transcript {
+      border-top: 1px solid var(--hair); padding-top: 16px; font-size: .95rem;
+      color: var(--muted); min-height: 26px; transition: color .3s;
+    }
+    .transcript.speaking { color: var(--fg); }
+    .btn-demo {
+      width: 100%; margin-top: 18px; padding: 15px; border-radius: 8px;
+      border: 1px solid var(--fg); font-size: .95rem; font-weight: 700; cursor: pointer;
+      background: var(--fg); color: var(--bg); transition: all .2s;
+    }
+    .btn-demo.rec { background: #fff; color: var(--fg); }
+
+    /* ===== Stats ===== */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 16px; margin: 72px 0; }
+    .stat { text-align: center; padding: 20px 10px; border: 1px solid var(--hair); border-radius: 8px; }
+    .stat .v { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; }
+    .stat .k { font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; margin-top: 6px; }
+
+    /* ===== Sections ===== */
+    .section { margin: 72px 0; }
+    .label { font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 20px; }
+    h2 { font-size: 1.6rem; font-weight: 700; letter-spacing: -.02em; margin-bottom: 26px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 16px; }
     .card {
-      border: 1px solid var(--hair);
-      border-radius: 8px;
-      padding: 24px 22px;
-      transition: border-color 0.15s ease;
+      border: 1px solid var(--hair); border-radius: 10px; padding: 24px 22px;
+      transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; position: relative;
     }
-    .card:hover { border-color: var(--fg); }
-    .card .num { font-size: 0.72rem; letter-spacing: 0.18em; color: var(--muted); font-weight: 600; }
+    .card:hover { transform: translateY(-4px); border-color: var(--fg); box-shadow: 0 10px 30px -12px rgba(0,0,0,.15); }
+    .card .num { font-size: .72rem; letter-spacing: .18em; color: var(--muted); font-weight: 600; }
     .card h3 { font-size: 1.02rem; font-weight: 600; margin: 10px 0 6px; }
-    .card p { color: var(--muted); font-size: 0.9rem; }
+    .card p { color: var(--muted); font-size: .9rem; }
 
-    /* Pipeline list */
     .steps { list-style: none; border-top: 1px solid var(--hair); }
     .steps li {
-      display: flex; gap: 20px; align-items: baseline;
+      display: flex; gap: 20px; align-items: baseline; flex-wrap: wrap;
       border-bottom: 1px solid var(--hair); padding: 18px 2px;
+      transform: translateX(-14px); opacity: 0; transition: all .5s ease;
     }
-    .steps .i {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.78rem; color: var(--muted); min-width: 28px;
-    }
-    .steps .t { font-weight: 600; font-size: 0.98rem; }
-    .steps .d { color: var(--muted); font-size: 0.9rem; margin-left: auto; text-align: right; max-width: 380px; }
+    .steps li.in { transform: none; opacity: 1; }
+    .steps .i { font-family: ui-monospace, Menlo, monospace; font-size: .78rem; color: var(--muted); min-width: 28px; }
+    .steps .t { font-weight: 600; }
+    .steps .d { color: var(--muted); font-size: .9rem; margin-left: auto; text-align: right; max-width: 380px; }
 
-    /* Status */
     .status {
-      display: flex; align-items: center; gap: 10px;
-      border: 1px solid var(--hair); border-radius: 8px;
-      padding: 14px 18px; color: var(--muted); font-size: 0.88rem;
+      display: flex; align-items: center; gap: 10px; border: 1px solid var(--hair);
+      border-radius: 8px; padding: 14px 18px; color: var(--muted); font-size: .88rem;
     }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--fg); flex-shrink: 0; }
 
     footer {
-      margin-top: 88px; padding-top: 28px; border-top: 1px solid var(--hair);
-      color: var(--muted); font-size: 0.82rem;
-      display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+      margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--hair);
+      color: var(--muted); font-size: .82rem; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
     }
     footer a { color: var(--muted); text-decoration: none; }
     footer a:hover { color: var(--fg); }
+
+    @media (max-width: 560px) {
+      .wrap { padding: 56px 20px 40px; }
+      .lang-row { grid-template-columns: 1fr; }
+      .swap { justify-self: center; }
+    }
   </style>
 </head>
 <body>
   <nav>
     <div class="brand">
-      <span class="mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-          <line x1="12" y1="19" x2="12" y2="23"></line>
-        </svg>
-      </span>
+      <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg></span>
       Speech Translator
     </div>
-    <a href="#how">How it works</a>
+    <a href="#demo">Try it</a>
   </nav>
 
   <div class="wrap">
-    <span class="kicker">Real-time · English ⇄ Indonesian</span>
-    <h1>Speech-to-Speech<br />Live Translator</h1>
-    <p class="sub">
-      Bidirectional voice translation for Zoom, Teams &amp; Slack.
-      Speech in → transcribe → translate → natural voice out, in near real time.
-    </p>
-    <div class="row">
-      <a class="cta" href="https://github.com/Erlandfatur/Speech-Translator-enterprise">View source →</a>
-      <a class="cta outline" href="#how">How it works</a>
+    <!-- HERO -->
+    <span class="kicker reveal in">Real-time · English ⇄ Indonesian</span>
+    <h1 class="reveal in">Speech-to-Speech<br />Live Translator<span class="caret" id="caret"></span></h1>
+    <p class="sub reveal in">Bidirectional voice translation for Zoom, Teams &amp; Slack. Speech in → transcribe → translate → natural voice out, in near real time.</p>
+    <div class="row reveal in">
+      <a class="cta" href="#demo" data-ripple>Try live demo ↓</a>
+      <a class="cta outline" href="https://github.com/Erlandfatur/Speech-Translator-enterprise" data-ripple>View source</a>
     </div>
 
+    <!-- DEMO -->
+    <div class="demo reveal" id="demo">
+      <div class="demo-top">
+        <span class="demo-label">Live demo</span>
+        <span class="indicator"><span class="pulse" id="pulse"></span><span id="stateText">Idle</span></span>
+      </div>
+      <div class="lang-row">
+        <div class="lang-box">
+          <small>From</small>
+          <select id="from" value="en"><option value="auto">Auto</option><option value="en" selected>English</option><option value="id">Indonesia</option></select>
+        </div>
+        <button class="swap" id="swap" title="Swap languages" aria-label="Swap">⇅</button>
+        <div class="lang-box">
+          <small>To</small>
+          <select id="to" value="id"><option value="en">English</option><option value="id" selected>Indonesia</option></select>
+        </div>
+      </div>
+      <div class="wave" id="wave"></div>
+      <div class="transcript" id="transcript">Tap Start to simulate a live translation…</div>
+      <button class="btn-demo" id="btnDemo" data-ripple>Start</button>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat reveal"><div class="v"><span data-count="370">0</span>+</div><div class="k">Glossary terms</div></div>
+      <div class="stat reveal d1"><div class="v"><span data-count="98.6">0</span>%</div><div class="k">Benchmark acc.</div></div>
+      <div class="stat reveal d2"><div class="v">~<span data-count="3">0</span>s</div><div class="k">Latency</div></div>
+      <div class="stat reveal d3"><div class="v"><span data-count="2">0</span>-way</div><div class="k">Bidirectional</div></div>
+    </div>
+
+    <!-- FEATURES -->
     <div class="section">
-      <div class="label">Capabilities</div>
+      <div class="label reveal">Capabilities</div>
       <div class="grid">
-        <div class="card">
-          <div class="num">01</div>
-          <h3>Low latency</h3>
-          <p>Streaming STT / NMT / TTS tuned toward ~2–3s end-to-end for short utterances.</p>
-        </div>
-        <div class="card">
-          <div class="num">02</div>
-          <h3>Bidirectional</h3>
-          <p>Two-way voice translation with VAD, speaker diarization &amp; echo suppression.</p>
-        </div>
-        <div class="card">
-          <div class="num">03</div>
-          <h3>Secure by default</h3>
-          <p>CORS allowlist, WebSocket token auth, env-only secrets, no hardcoded keys.</p>
-        </div>
-        <div class="card">
-          <div class="num">04</div>
-          <h3>Custom glossary</h3>
-          <p>~370 curated EN⇄ID business &amp; technical terms, 98.6% benchmark accuracy.</p>
-        </div>
+        <div class="card reveal"><div class="num">01</div><h3>Low latency</h3><p>Streaming STT / NMT / TTS tuned toward ~2–3s end-to-end for short utterances.</p></div>
+        <div class="card reveal d1"><div class="num">02</div><h3>Bidirectional</h3><p>Two-way voice translation with VAD, speaker diarization &amp; echo suppression.</p></div>
+        <div class="card reveal d2"><div class="num">03</div><h3>Secure by default</h3><p>CORS allowlist, WebSocket token auth, env-only secrets, no hardcoded keys.</p></div>
+        <div class="card reveal d3"><div class="num">04</div><h3>Custom glossary</h3><p>~370 curated EN⇄ID business &amp; technical terms with high benchmark accuracy.</p></div>
       </div>
     </div>
 
+    <!-- PIPELINE -->
     <div class="section" id="how">
-      <div class="label">Pipeline</div>
-      <h2>How it works</h2>
+      <div class="label reveal">Pipeline</div>
+      <h2 class="reveal">How it works</h2>
       <ul class="steps">
         <li><span class="i">01</span><span class="t">Capture &amp; VAD</span><span class="d">Tab / mic audio, silence detection</span></li>
         <li><span class="i">02</span><span class="t">Transcribe</span><span class="d">Whisper Large v3 Turbo, streaming chunks</span></li>
@@ -191,7 +236,7 @@
       </ul>
     </div>
 
-    <div class="status">
+    <div class="status reveal">
       <span class="dot"></span>
       <span>Static landing page on GitHub Pages — the app backend runs separately.</span>
     </div>
@@ -201,5 +246,126 @@
       <a href="https://github.com/Erlandfatur/Speech-Translator-enterprise">GitHub</a>
     </footer>
   </div>
+
+  <script>
+    // ===== Ripple micro-interaction =====
+    document.querySelectorAll('[data-ripple]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const r = document.createElement('span');
+        r.className = 'ripple';
+        const size = Math.max(btn.offsetWidth, btn.offsetHeight);
+        const x = e.clientX - btn.getBoundingClientRect().left - size / 2;
+        const y = e.clientY - btn.getBoundingClientRect().top - size / 2;
+        r.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px`;
+        btn.appendChild(r);
+        setTimeout(() => r.remove(), 600);
+      });
+    });
+
+    // ===== Typing effect =====
+    const words = ['Live Translator', 'Real-time Dubbing', 'Two-way Voice'];
+    let wi = 0, ci = 0, deleting = false;
+    function type() {
+      const el = document.getElementById('caret');
+      const w = words[wi];
+      ci += deleting ? -1 : 1;
+      el.previousSibling.textContent = w.slice(0, ci);
+      let delay = deleting ? 40 : 90;
+      if (!deleting && ci === w.length) { delay = 1600; deleting = true; }
+      else if (deleting && ci === 0) { deleting = false; wi = (wi + 1) % words.length; delay = 300; }
+      setTimeout(type, delay);
+    }
+    // start after hero is shown
+
+    // ===== Demo simulator =====
+    const btn = document.getElementById('btnDemo');
+    const wave = document.getElementById('wave');
+    const pulse = document.getElementById('pulse');
+    const stateText = document.getElementById('stateText');
+    const transcript = document.getElementById('transcript');
+    const bars = [];
+    for (let i = 0; i < 24; i++) {
+      const b = document.createElement('div');
+      b.className = 'bar';
+      b.style.animationDelay = (i * 0.08) + 's';
+      wave.appendChild(b); bars.push(b);
+    }
+    const phrases = {
+      'en,id': ['How are you today?', 'The meeting starts at 3 PM.', 'Could you repeat that, please?', 'Our revenue grew by 15%.'],
+      'id,en': ['Apa kabar hari ini?', 'Rapat dimulai pukul tiga sore.', 'Bisa ulangi sekali lagi?', 'Pendapatan kami naik 15%.']
+    };
+    const tl = {
+      'en,id': ['Bagaimana kabarmu hari ini?', 'Rapat dimulai pukul 3 sore.', 'Bisakah Anda mengulanginya?', 'Pendapatan kami tumbuh 15%.'],
+      'id,en': ['How are you today?', 'The meeting starts at 3 PM.', 'Could you repeat that once more?', 'Our revenue grew 15%.']
+    };
+    let timer = null;
+
+    function updateWave(on) { bars.forEach(b => { b.className = 'bar ' + (on ? 'on' : 'off'); }); }
+    updateWave(false);
+
+    function setState(rec) {
+      btn.textContent = rec ? 'Stop' : 'Start';
+      btn.classList.toggle('rec', rec);
+      pulse.classList.toggle('live', rec);
+      stateText.textContent = rec ? 'Translating…' : 'Idle';
+    }
+
+    btn.addEventListener('click', () => {
+      const rec = btn.textContent === 'Start';
+      if (rec) {
+        const key = document.getElementById('from').value + ',' + document.getElementById('to').value;
+        const srcs = phrases[key] || phrases['en,id'];
+        const tls = tl[key] || tl['en,id'];
+        let i = 0;
+        updateWave(true); setState(true);
+        transcript.classList.add('speaking');
+        transcript.textContent = srcs[0] + '  →  ' + tls[0];
+        timer = setInterval(() => {
+          i = (i + 1) % srcs.length;
+          transcript.textContent = srcs[i] + '  →  ' + tls[i];
+        }, 2400);
+      } else {
+        updateWave(false); setState(false);
+        transcript.classList.remove('speaking');
+        transcript.textContent = 'Tap Start to simulate a live translation…';
+        clearInterval(timer);
+      }
+    });
+
+    document.getElementById('swap').addEventListener('click', () => {
+      const a = document.getElementById('from'), b = document.getElementById('to');
+      const tmp = a.value; a.value = b.value; b.value = tmp;
+    });
+
+    // ===== Count-up =====
+    function countUp(el) {
+      const target = parseFloat(el.dataset.count);
+      const dec = (target % 1 !== 0) ? 1 : 0;
+      const dur = 1200; const t0 = performance.now();
+      function step(t) {
+        const p = Math.min((t - t0) / dur, 1);
+        el.textContent = (target * (1 - Math.pow(1 - p, 3))).toFixed(dec);
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    // ===== Scroll reveal (IntersectionObserver) =====
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          e.target.querySelectorAll('[data-count]').forEach(countUp);
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.reveal, .steps li').forEach(el => io.observe(el));
+
+    // ===== Init =====
+    document.querySelector('.kicker').classList.add('in');
+    setTimeout(type, 400);
+  </script>
 </body>
 </html>
