@@ -140,6 +140,7 @@ Repositori sudah menyertakan `render.yaml` (Blueprint). Langkah:
 - `ANALISIS_PROYEK.md` — analisis proyek & risk assessment lengkap
 - `SOKUJI_ALIGNMENT_ROADMAP.md` — roadmap alignment kemampuan
 - `AGENTS.md` — aturan proyek & path (anti-typo)
+- `deploy/` — template docker-compose multi-project VPS (translator + webapp + postgres + nginx)
 
 ## 📄 Lisensi
 

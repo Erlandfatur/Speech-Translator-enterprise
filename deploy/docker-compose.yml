@@ -1,0 +1,78 @@
+version: "3.9"
+
+# ============================================================
+#  MULTI-PROJECT VPS — docker-compose template
+#  Alokasi untuk VPS 4GB / 2-4 vCPU (mis. IDCloudHost/Niagahoster)
+#  Pakai:  docker-compose up -d --build
+# ============================================================
+
+services:
+  # ---------- 1. Speech Translator (berat, ~1.5GB) ----------
+  translator:
+    build: ../server
+    container_name: translator
+    restart: unless-stopped
+    env_file: ../server/.env
+    environment:
+      - PORT=8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - speech_models:/app/models
+    mem_limit: 1400m
+    cpus: 1.0
+
+  # ---------- 2. Contoh web app lain (~0.5GB) ----------
+  # Ganti image/service sesuai project lain (Node/PHP/Go/...)
+  webapp:
+    image: nginx:alpine          # placeholder — ganti dengan app milikmu
+    container_name: webapp
+    restart: unless-stopped
+    volumes:
+      - ./sites/app1:/usr/share/nginx/html:ro
+    ports:
+      - "3000:80"
+    mem_limit: 512m
+    cpus: 0.5
+
+  # ---------- 3. Database (~1GB) ----------
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change-me}
+      POSTGRES_DB: appdb
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    mem_limit: 1024m
+    cpus: 0.5
+
+  # ---------- 4. Nginx reverse proxy (80/443 + SSL) ----------
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    depends_on:
+      - translator
+      - webapp
+    mem_limit: 128m
+    cpus: 0.1
+
+volumes:
+  speech_models:
+  pg_data:
+
+networks:
+  default:
+    driver: bridge
