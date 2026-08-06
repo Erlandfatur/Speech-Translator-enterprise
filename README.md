@@ -2,6 +2,8 @@
 
 Bidirectional **real-time voice translation & dubbing** for meetings (English ⇄ Indonesian & multi-language). Speech-in → transcribe → translate → natural voice-out, built for Zoom, Teams & Slack workflows.
 
+> 🌐 **Landing Page:** https://erlandfatur.github.io/Speech-Translator-enterprise/ — interaktif, bilingual (EN/ID)
+
 ## ✨ Fitur Utama
 
 - **Bidirectional Voice Translation** — 2-way audio pipeline (Audio In → STT → NMT → TTS → Audio Out)

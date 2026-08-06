@@ -6,69 +6,48 @@
   <title>Speech Translator — AI Speech-to-Speech</title>
   <style>
     :root {
-      --bg: #ffffff;
-      --fg: #0a0a0a;
-      --muted: #6b6b6b;
-      --hair: #e5e5e5;
+      --bg: #ffffff; --fg: #0a0a0a; --muted: #6b6b6b; --hair: #e5e5e5;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
-      background: var(--bg);
-      color: var(--fg);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 
-    /* ===== Nav ===== */
-    nav {
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid var(--hair); padding: 18px 28px;
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(255,255,255,0.85); backdrop-filter: blur(10px);
-    }
+    /* Nav */
+    nav { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--hair); padding: 16px clamp(20px, 5vw, 96px); position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); }
     .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -0.01em; }
     .mark { width: 24px; height: 24px; border: 1.5px solid var(--fg); display: flex; align-items: center; justify-content: center; border-radius: 5px; }
     .mark svg { width: 13px; height: 13px; }
-    nav a { color: var(--muted); text-decoration: none; font-size: 0.85rem; transition: color .15s; }
-    nav a:hover { color: var(--fg); }
+    .nav-right { display: flex; align-items: center; gap: 18px; }
+    nav .link { color: var(--muted); text-decoration: none; font-size: .85rem; transition: color .15s; }
+    nav .link:hover { color: var(--fg); }
+
+    /* Language switcher */
+    .lang-toggle { display: flex; border: 1px solid var(--hair); border-radius: 6px; overflow: hidden; }
+    .lang-toggle button { background: transparent; border: none; padding: 6px 12px; font-size: .78rem; font-weight: 600; color: var(--muted); cursor: pointer; transition: all .15s; }
+    .lang-toggle button.active { background: var(--fg); color: var(--bg); }
+    .lang-toggle button:not(.active):hover { color: var(--fg); }
 
     .wrap { width: 100%; max-width: 1600px; margin: 0 auto; padding: 88px clamp(20px, 6vw, 96px) 48px; }
 
-    /* ===== Reveal ===== */
     .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s ease; }
     .reveal.in { opacity: 1; transform: none; }
     .d1 { transition-delay: .1s } .d2 { transition-delay: .2s } .d3 { transition-delay: .3s } .d4 { transition-delay: .4s }
 
-    /* ===== Hero ===== */
-    .kicker {
-      font-size: .72rem; letter-spacing: .22em; text-transform: uppercase;
-      color: var(--muted); font-weight: 600; margin-bottom: 26px;
-    }
+    .kicker { font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 26px; }
     h1 { font-size: clamp(2.4rem, 7vw, 4rem); font-weight: 800; letter-spacing: -.035em; line-height: 1.02; margin-bottom: 20px; }
-    h1 .caret { display: inline-block; width: 2px; height: .9em; background: var(--fg); vertical-align: text-bottom; margin-left: 2px; animation: blink 1s step-end infinite; }
+    .caret { display: inline-block; width: 2px; height: .9em; background: var(--fg); vertical-align: text-bottom; margin-left: 2px; animation: blink 1s step-end infinite; }
     @keyframes blink { 50% { opacity: 0; } }
     .sub { color: var(--muted); font-size: 1.15rem; max-width: 640px; margin-bottom: 40px; }
 
     .row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 64px; }
-    .cta {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--fg); color: var(--bg); border: 1px solid var(--fg);
-      padding: 14px 26px; border-radius: 6px; font-size: .9rem; font-weight: 600;
-      cursor: pointer; text-decoration: none; position: relative; overflow: hidden;
-    }
+    .cta { display: inline-flex; align-items: center; gap: 8px; background: var(--fg); color: var(--bg); border: 1px solid var(--fg); padding: 14px 26px; border-radius: 6px; font-size: .9rem; font-weight: 600; cursor: pointer; text-decoration: none; position: relative; overflow: hidden; }
     .cta.outline { background: transparent; color: var(--fg); }
     .cta .ripple { position: absolute; border-radius: 50%; background: rgba(255,255,255,.35); transform: scale(0); animation: ripple .6s ease-out; pointer-events: none; }
     .cta.outline .ripple { background: rgba(0,0,0,.15); }
     @keyframes ripple { to { transform: scale(4); opacity: 0; } }
 
-    /* ===== Demo panel ===== */
-    .demo {
-      border: 1px solid var(--fg); border-radius: 12px; padding: 26px;
-      margin: 8px 0 20px; background: #fafafa;
-    }
+    /* Demo */
+    .demo { border: 1px solid var(--fg); border-radius: 12px; padding: 26px; margin: 8px 0 20px; background: #fafafa; }
     .demo-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
     .demo-label { font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
     .indicator { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--muted); }
@@ -79,81 +58,48 @@
     .lang-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; margin-bottom: 20px; }
     .lang-box { text-align: center; }
     .lang-box small { display: block; font-size: .68rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-    .lang-box select {
-      width: 100%; padding: 10px 12px; border: 1px solid var(--hair); border-radius: 6px;
-      background: #fff; font-size: .9rem; color: var(--fg); cursor: pointer; outline: none;
-    }
+    .lang-box select { width: 100%; padding: 10px 12px; border: 1px solid var(--hair); border-radius: 6px; background: #fff; font-size: .9rem; color: var(--fg); cursor: pointer; outline: none; }
     .lang-box select:focus { border-color: var(--fg); }
-    .swap {
-      width: 34px; height: 34px; border: 1px solid var(--hair); border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; cursor: pointer;
-      color: var(--fg); background: #fff; transition: transform .3s ease; font-size: .9rem;
-    }
+    .swap { width: 34px; height: 34px; border: 1px solid var(--hair); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--fg); background: #fff; transition: transform .3s ease; font-size: .9rem; }
     .swap:hover { transform: rotate(180deg); }
 
-    /* wave */
-    .wave {
-      height: 60px; display: flex; align-items: center; justify-content: center; gap: 4px;
-      margin-bottom: 22px; min-height: 60px;
-    }
+    .wave { height: 60px; display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 22px; min-height: 60px; }
     .wave .bar { width: 3px; background: var(--fg); border-radius: 3px; }
     .wave .bar.on { animation: bounce .8s ease-in-out infinite; }
     .wave .bar.off { background: var(--hair); height: 4px !important; }
     @keyframes bounce { 0%,100% { height: 6px; } 50% { height: 48px; } }
 
-    .transcript {
-      border-top: 1px solid var(--hair); padding-top: 16px; font-size: .95rem;
-      color: var(--muted); min-height: 26px; transition: color .3s;
-    }
+    .transcript { border-top: 1px solid var(--hair); padding-top: 16px; font-size: .95rem; color: var(--muted); min-height: 26px; transition: color .3s; }
     .transcript.speaking { color: var(--fg); }
-    .btn-demo {
-      width: 100%; margin-top: 18px; padding: 15px; border-radius: 8px;
-      border: 1px solid var(--fg); font-size: .95rem; font-weight: 700; cursor: pointer;
-      background: var(--fg); color: var(--bg); transition: all .2s;
-    }
+    .btn-demo { width: 100%; margin-top: 18px; padding: 15px; border-radius: 8px; border: 1px solid var(--fg); font-size: .95rem; font-weight: 700; cursor: pointer; background: var(--fg); color: var(--bg); transition: all .2s; }
     .btn-demo.rec { background: #fff; color: var(--fg); }
 
-    /* ===== Stats ===== */
     .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 16px; margin: 72px 0; }
     .stat { text-align: center; padding: 20px 10px; border: 1px solid var(--hair); border-radius: 8px; }
     .stat .v { font-size: 2rem; font-weight: 800; letter-spacing: -.03em; }
     .stat .k { font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; margin-top: 6px; }
 
-    /* ===== Sections ===== */
     .section { margin: 72px 0; }
     .label { font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 20px; }
     h2 { font-size: 1.6rem; font-weight: 700; letter-spacing: -.02em; margin-bottom: 26px; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: 16px; }
-    .card {
-      border: 1px solid var(--hair); border-radius: 10px; padding: 24px 22px;
-      transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; position: relative;
-    }
+    .card { border: 1px solid var(--hair); border-radius: 10px; padding: 24px 22px; transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
     .card:hover { transform: translateY(-4px); border-color: var(--fg); box-shadow: 0 10px 30px -12px rgba(0,0,0,.15); }
     .card .num { font-size: .72rem; letter-spacing: .18em; color: var(--muted); font-weight: 600; }
     .card h3 { font-size: 1.02rem; font-weight: 600; margin: 10px 0 6px; }
     .card p { color: var(--muted); font-size: .9rem; }
 
     .steps { list-style: none; border-top: 1px solid var(--hair); }
-    .steps li {
-      display: flex; gap: 20px; align-items: baseline; flex-wrap: wrap;
-      border-bottom: 1px solid var(--hair); padding: 18px 2px;
-      transform: translateX(-14px); opacity: 0; transition: all .5s ease;
-    }
+    .steps li { display: flex; gap: 20px; align-items: baseline; flex-wrap: wrap; border-bottom: 1px solid var(--hair); padding: 18px 2px; transform: translateX(-14px); opacity: 0; transition: all .5s ease; }
     .steps li.in { transform: none; opacity: 1; }
     .steps .i { font-family: ui-monospace, Menlo, monospace; font-size: .78rem; color: var(--muted); min-width: 28px; }
     .steps .t { font-weight: 600; }
     .steps .d { color: var(--muted); font-size: .9rem; margin-left: auto; text-align: right; max-width: 380px; }
 
-    .status {
-      display: flex; align-items: center; gap: 10px; border: 1px solid var(--hair);
-      border-radius: 8px; padding: 14px 18px; color: var(--muted); font-size: .88rem;
-    }
+    .status { display: flex; align-items: center; gap: 10px; border: 1px solid var(--hair); border-radius: 8px; padding: 14px 18px; color: var(--muted); font-size: .88rem; }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--fg); flex-shrink: 0; }
 
-    footer {
-      margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--hair);
-      color: var(--muted); font-size: .82rem; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-    }
+    footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--hair); color: var(--muted); font-size: .82rem; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
     footer a { color: var(--muted); text-decoration: none; }
     footer a:hover { color: var(--fg); }
 
@@ -161,6 +107,8 @@
       .wrap { padding: 56px 20px 40px; }
       .lang-row { grid-template-columns: 1fr; }
       .swap { justify-self: center; }
+      nav { padding: 14px 20px; }
+      .nav-right .link { display: none; }
     }
   </style>
 </head>
@@ -170,85 +118,184 @@
       <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg></span>
       Speech Translator
     </div>
-    <a href="#demo">Try it</a>
+    <div class="nav-right">
+      <a class="link" href="#demo" data-i18n="nav.try">Try it</a>
+      <div class="lang-toggle" id="langToggle">
+        <button data-lang="en" class="active">EN</button>
+        <button data-lang="id">ID</button>
+      </div>
+    </div>
   </nav>
 
   <div class="wrap">
     <!-- HERO -->
-    <span class="kicker reveal in">Real-time · English ⇄ Indonesian</span>
-    <h1 class="reveal in">Speech-to-Speech<br />Live Translator<span class="caret" id="caret"></span></h1>
-    <p class="sub reveal in">Bidirectional voice translation for Zoom, Teams &amp; Slack. Speech in → transcribe → translate → natural voice out, in near real time.</p>
+    <span class="kicker reveal in" data-i18n="hero.kicker">Real-time · English ⇄ Indonesian</span>
+    <h1 class="reveal in"><span data-i18n="hero.line1">Speech-to-Speech</span><br /><span data-i18n="hero.line2">Live Translator</span><span class="caret" id="caret"></span></h1>
+    <p class="sub reveal in" data-i18n="hero.sub">Bidirectional voice translation for Zoom, Teams &amp; Slack. Speech in → transcribe → translate → natural voice out, in near real time.</p>
     <div class="row reveal in">
-      <a class="cta" href="#demo" data-ripple>Try live demo ↓</a>
-      <a class="cta outline" href="https://github.com/Erlandfatur/Speech-Translator-enterprise" data-ripple>View source</a>
+      <a class="cta" href="#demo" data-ripple data-i18n="hero.try">Try live demo ↓</a>
+      <a class="cta outline" href="https://github.com/Erlandfatur/Speech-Translator-enterprise" data-ripple data-i18n="hero.source">View source</a>
     </div>
 
     <!-- DEMO -->
     <div class="demo reveal" id="demo">
       <div class="demo-top">
-        <span class="demo-label">Live demo</span>
-        <span class="indicator"><span class="pulse" id="pulse"></span><span id="stateText">Idle</span></span>
+        <span class="demo-label" data-i18n="demo.label">Live demo</span>
+        <span class="indicator"><span class="pulse" id="pulse"></span><span id="stateText" data-i18n="demo.idle">Idle</span></span>
       </div>
       <div class="lang-row">
         <div class="lang-box">
-          <small>From</small>
-          <select id="from" value="en"><option value="auto">Auto</option><option value="en" selected>English</option><option value="id">Indonesia</option></select>
+          <small data-i18n="demo.from">From</small>
+          <select id="from"><option value="auto" data-i18n="demo.auto">Auto</option><option value="en" selected>English</option><option value="id">Indonesia</option></select>
         </div>
-        <button class="swap" id="swap" title="Swap languages" aria-label="Swap">⇅</button>
+        <button class="swap" id="swap" title="Swap" aria-label="Swap">⇅</button>
         <div class="lang-box">
-          <small>To</small>
-          <select id="to" value="id"><option value="en">English</option><option value="id" selected>Indonesia</option></select>
+          <small data-i18n="demo.to">To</small>
+          <select id="to"><option value="en">English</option><option value="id" selected>Indonesia</option></select>
         </div>
       </div>
       <div class="wave" id="wave"></div>
-      <div class="transcript" id="transcript">Tap Start to simulate a live translation…</div>
-      <button class="btn-demo" id="btnDemo" data-ripple>Start</button>
+      <div class="transcript" id="transcript" data-i18n="demo.placeholder">Tap Start to simulate a live translation…</div>
+      <button class="btn-demo" id="btnDemo" data-ripple data-i18n="demo.start">Start</button>
     </div>
 
     <!-- STATS -->
     <div class="stats">
-      <div class="stat reveal"><div class="v"><span data-count="370">0</span>+</div><div class="k">Glossary terms</div></div>
-      <div class="stat reveal d1"><div class="v"><span data-count="98.6">0</span>%</div><div class="k">Benchmark acc.</div></div>
-      <div class="stat reveal d2"><div class="v">~<span data-count="3">0</span>s</div><div class="k">Latency</div></div>
-      <div class="stat reveal d3"><div class="v"><span data-count="2">0</span>-way</div><div class="k">Bidirectional</div></div>
+      <div class="stat reveal"><div class="v"><span data-count="370">0</span>+</div><div class="k" data-i18n="stat.glossary">Glossary terms</div></div>
+      <div class="stat reveal d1"><div class="v"><span data-count="98.6">0</span>%</div><div class="k" data-i18n="stat.acc">Benchmark acc.</div></div>
+      <div class="stat reveal d2"><div class="v">~<span data-count="3">0</span>s</div><div class="k" data-i18n="stat.latency">Latency</div></div>
+      <div class="stat reveal d3"><div class="v"><span data-count="2">0</span>-way</div><div class="k" data-i18n="stat.bi">Bidirectional</div></div>
     </div>
 
     <!-- FEATURES -->
     <div class="section">
-      <div class="label reveal">Capabilities</div>
+      <div class="label reveal" data-i18n="feat.label">Capabilities</div>
       <div class="grid">
-        <div class="card reveal"><div class="num">01</div><h3>Low latency</h3><p>Streaming STT / NMT / TTS tuned toward ~2–3s end-to-end for short utterances.</p></div>
-        <div class="card reveal d1"><div class="num">02</div><h3>Bidirectional</h3><p>Two-way voice translation with VAD, speaker diarization &amp; echo suppression.</p></div>
-        <div class="card reveal d2"><div class="num">03</div><h3>Secure by default</h3><p>CORS allowlist, WebSocket token auth, env-only secrets, no hardcoded keys.</p></div>
-        <div class="card reveal d3"><div class="num">04</div><h3>Custom glossary</h3><p>~370 curated EN⇄ID business &amp; technical terms with high benchmark accuracy.</p></div>
+        <div class="card reveal"><div class="num">01</div><h3 data-i18n="feat.latency.t">Low latency</h3><p data-i18n="feat.latency.d">Streaming STT / NMT / TTS tuned toward ~2–3s end-to-end for short utterances.</p></div>
+        <div class="card reveal d1"><div class="num">02</div><h3 data-i18n="feat.bi.t">Bidirectional</h3><p data-i18n="feat.bi.d">Two-way voice translation with VAD, speaker diarization &amp; echo suppression.</p></div>
+        <div class="card reveal d2"><div class="num">03</div><h3 data-i18n="feat.sec.t">Secure by default</h3><p data-i18n="feat.sec.d">CORS allowlist, WebSocket token auth, env-only secrets, no hardcoded keys.</p></div>
+        <div class="card reveal d3"><div class="num">04</div><h3 data-i18n="feat.gloss.t">Custom glossary</h3><p data-i18n="feat.gloss.d">~370 curated EN⇄ID business &amp; technical terms with high benchmark accuracy.</p></div>
       </div>
     </div>
 
     <!-- PIPELINE -->
     <div class="section" id="how">
-      <div class="label reveal">Pipeline</div>
-      <h2 class="reveal">How it works</h2>
+      <div class="label reveal" data-i18n="pipe.label">Pipeline</div>
+      <h2 class="reveal" data-i18n="pipe.title">How it works</h2>
       <ul class="steps">
-        <li><span class="i">01</span><span class="t">Capture &amp; VAD</span><span class="d">Tab / mic audio, silence detection</span></li>
-        <li><span class="i">02</span><span class="t">Transcribe</span><span class="d">Whisper Large v3 Turbo, streaming chunks</span></li>
-        <li><span class="i">03</span><span class="t">Translate</span><span class="d">Llama-3.3-70B + glossary, near real-time</span></li>
-        <li><span class="i">04</span><span class="t">Speak</span><span class="d">Natural neural TTS, ducking + echo-safe</span></li>
+        <li><span class="i">01</span><span class="t" data-i18n="pipe.s1.t">Capture &amp; VAD</span><span class="d" data-i18n="pipe.s1.d">Tab / mic audio, silence detection</span></li>
+        <li><span class="i">02</span><span class="t" data-i18n="pipe.s2.t">Transcribe</span><span class="d" data-i18n="pipe.s2.d">Whisper Large v3 Turbo, streaming chunks</span></li>
+        <li><span class="i">03</span><span class="t" data-i18n="pipe.s3.t">Translate</span><span class="d" data-i18n="pipe.s3.d">Llama-3.3-70B + glossary, near real-time</span></li>
+        <li><span class="i">04</span><span class="t" data-i18n="pipe.s4.t">Speak</span><span class="d" data-i18n="pipe.s4.d">Natural neural TTS, ducking + echo-safe</span></li>
       </ul>
     </div>
 
     <div class="status reveal">
       <span class="dot"></span>
-      <span>Static landing page on GitHub Pages — the app backend runs separately.</span>
+      <span data-i18n="note">Static landing page on GitHub Pages — the app backend runs separately.</span>
     </div>
 
     <footer>
       <span>© Erlandfatur</span>
-      <a href="https://github.com/Erlandfatur/Speech-Translator-enterprise">GitHub</a>
+      <a href="https://github.com/Erlandfatur/Speech-Translator-enterprise" data-i18n="footer.github">GitHub</a>
     </footer>
   </div>
 
   <script>
-    // ===== Ripple micro-interaction =====
+    // ===== i18n dictionary =====
+    const I18N = {
+      en: {
+        'nav.try': 'Try it',
+        'hero.kicker': 'Real-time · English ⇄ Indonesian',
+        'hero.line1': 'Speech-to-Speech',
+        'hero.line2': 'Live Translator',
+        'hero.sub': 'Bidirectional voice translation for Zoom, Teams & Slack. Speech in → transcribe → translate → natural voice out, in near real time.',
+        'hero.try': 'Try live demo ↓',
+        'hero.source': 'View source',
+        'demo.label': 'Live demo',
+        'demo.idle': 'Idle',
+        'demo.from': 'From',
+        'demo.to': 'To',
+        'demo.auto': 'Auto',
+        'demo.placeholder': 'Tap Start to simulate a live translation…',
+        'demo.start': 'Start',
+        'stat.glossary': 'Glossary terms',
+        'stat.acc': 'Benchmark acc.',
+        'stat.latency': 'Latency',
+        'stat.bi': 'Bidirectional',
+        'feat.label': 'Capabilities',
+        'feat.latency.t': 'Low latency', 'feat.latency.d': 'Streaming STT / NMT / TTS tuned toward ~2–3s end-to-end for short utterances.',
+        'feat.bi.t': 'Bidirectional', 'feat.bi.d': 'Two-way voice translation with VAD, speaker diarization & echo suppression.',
+        'feat.sec.t': 'Secure by default', 'feat.sec.d': 'CORS allowlist, WebSocket token auth, env-only secrets, no hardcoded keys.',
+        'feat.gloss.t': 'Custom glossary', 'feat.gloss.d': '~370 curated EN⇄ID business & technical terms with high benchmark accuracy.',
+        'pipe.label': 'Pipeline',
+        'pipe.title': 'How it works',
+        'pipe.s1.t': 'Capture & VAD', 'pipe.s1.d': 'Tab / mic audio, silence detection',
+        'pipe.s2.t': 'Transcribe', 'pipe.s2.d': 'Whisper Large v3 Turbo, streaming chunks',
+        'pipe.s3.t': 'Translate', 'pipe.s3.d': 'Llama-3.3-70B + glossary, near real-time',
+        'pipe.s4.t': 'Speak', 'pipe.s4.d': 'Natural neural TTS, ducking + echo-safe',
+        'note': 'Static landing page on GitHub Pages — the app backend runs separately.',
+        'footer.github': 'GitHub',
+        'hero.words': ['Live Translator','Real-time Dubbing','Two-way Voice']
+      },
+      id: {
+        'nav.try': 'Coba',
+        'hero.kicker': 'Real-time · Indonesia ⇄ Inggris',
+        'hero.line1': 'Penerjemah',
+        'hero.line2': 'Suara-ke-Suara',
+        'hero.sub': 'Terjemahan suara dua arah untuk Zoom, Teams & Slack. Suara masuk → transkrip → terjemah → suara keluar yang natural, hampir real-time.',
+        'hero.try': 'Coba demo langsung ↓',
+        'hero.source': 'Lihat sumber',
+        'demo.label': 'Demo langsung',
+        'demo.idle': 'Diam',
+        'demo.from': 'Dari',
+        'demo.to': 'Ke',
+        'demo.auto': 'Otomatis',
+        'demo.placeholder': 'Tekan Start untuk simulasi terjemahan langsung…',
+        'demo.start': 'Mulai',
+        'stat.glossary': 'Istilah kamus',
+        'stat.acc': 'Akurasi uji',
+        'stat.latency': 'Latensi',
+        'stat.bi': 'Dua arah',
+        'feat.label': 'Kemampuan',
+        'feat.latency.t': 'Latensi rendah', 'feat.latency.d': 'Pipeline streaming STT / NMT / TTS disetel ~2–3 detik end-to-end untuk ucapan pendek.',
+        'feat.bi.t': 'Dua arah', 'feat.bi.d': 'Terjemahan suara dua arah dengan VAD, diarisasi pembicara & peredam gema.',
+        'feat.sec.t': 'Aman bawaan', 'feat.sec.d': 'Allowlist CORS, otentikasi token WebSocket, rahasia hanya via env, tanpa key hardcoded.',
+        'feat.gloss.t': 'Kamus khusus', 'feat.gloss.d': '~370 istilah bisnis & teknis EN⇄ID kurasi dengan akurasi uji tinggi.',
+        'pipe.label': 'Alur',
+        'pipe.title': 'Cara kerja',
+        'pipe.s1.t': 'Tangkap & VAD', 'pipe.s1.d': 'Audio tab / mic, deteksi hening',
+        'pipe.s2.t': 'Transkrip', 'pipe.s2.d': 'Whisper Large v3 Turbo, potongan streaming',
+        'pipe.s3.t': 'Terjemah', 'pipe.s3.d': 'Llama-3.3-70B + kamus, hampir real-time',
+        'pipe.s4.t': 'Bicarakan', 'pipe.s4.d': 'TTS neural natural, ducking + anti-gema',
+        'note': 'Landing page statis di GitHub Pages — backend aplikasi berjalan terpisah.',
+        'footer.github': 'GitHub',
+        'hero.words': ['Penerjemah Suara','Dubbing Real-time','Suara Dua Arah']
+      }
+    };
+
+    let LANG = localStorage.getItem('lp-lang') || 'en';
+
+    function applyLang() {
+      document.documentElement.lang = LANG;
+      const dict = I18N[LANG];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] !== undefined) el.textContent = dict[key];
+      });
+      document.querySelectorAll('#langToggle button').forEach(b =>
+        b.classList.toggle('active', b.dataset.lang === LANG));
+    }
+
+    document.querySelectorAll('#langToggle button').forEach(b => {
+      b.addEventListener('click', () => {
+        LANG = b.dataset.lang;
+        localStorage.setItem('lp-lang', LANG);
+        applyLang();
+      });
+    });
+
+    // ===== Ripple =====
     document.querySelectorAll('[data-ripple]').forEach(btn => {
       btn.addEventListener('click', e => {
         const r = document.createElement('span');
@@ -263,19 +310,19 @@
     });
 
     // ===== Typing effect =====
-    const words = ['Live Translator', 'Real-time Dubbing', 'Two-way Voice'];
     let wi = 0, ci = 0, deleting = false;
+    const typeEl = document.getElementById('caret');
+    const line2 = document.querySelector('[data-i18n="hero.line2"]');
     function type() {
-      const el = document.getElementById('caret');
+      const words = I18N[LANG]['hero.words'];
       const w = words[wi];
       ci += deleting ? -1 : 1;
-      el.previousSibling.textContent = w.slice(0, ci);
+      line2.textContent = w.slice(0, ci);
       let delay = deleting ? 40 : 90;
       if (!deleting && ci === w.length) { delay = 1600; deleting = true; }
       else if (deleting && ci === 0) { deleting = false; wi = (wi + 1) % words.length; delay = 300; }
       setTimeout(type, delay);
     }
-    // start after hero is shown
 
     // ===== Demo simulator =====
     const btn = document.getElementById('btnDemo');
@@ -286,8 +333,7 @@
     const bars = [];
     for (let i = 0; i < 24; i++) {
       const b = document.createElement('div');
-      b.className = 'bar';
-      b.style.animationDelay = (i * 0.08) + 's';
+      b.className = 'bar'; b.style.animationDelay = (i * 0.08) + 's';
       wave.appendChild(b); bars.push(b);
     }
     const phrases = {
@@ -299,19 +345,16 @@
       'id,en': ['How are you today?', 'The meeting starts at 3 PM.', 'Could you repeat that once more?', 'Our revenue grew 15%.']
     };
     let timer = null;
-
     function updateWave(on) { bars.forEach(b => { b.className = 'bar ' + (on ? 'on' : 'off'); }); }
     updateWave(false);
-
     function setState(rec) {
-      btn.textContent = rec ? 'Stop' : 'Start';
+      btn.textContent = rec ? (LANG === 'en' ? 'Stop' : 'Berhenti') : (LANG === 'en' ? 'Start' : 'Mulai');
       btn.classList.toggle('rec', rec);
       pulse.classList.toggle('live', rec);
-      stateText.textContent = rec ? 'Translating…' : 'Idle';
+      stateText.textContent = rec ? (LANG === 'en' ? 'Translating…' : 'Menerjemahkan…') : (LANG === 'en' ? 'Idle' : 'Diam');
     }
-
     btn.addEventListener('click', () => {
-      const rec = btn.textContent === 'Start';
+      const rec = btn.textContent === 'Start' || btn.textContent === 'Mulai';
       if (rec) {
         const key = document.getElementById('from').value + ',' + document.getElementById('to').value;
         const srcs = phrases[key] || phrases['en,id'];
@@ -320,18 +363,14 @@
         updateWave(true); setState(true);
         transcript.classList.add('speaking');
         transcript.textContent = srcs[0] + '  →  ' + tls[0];
-        timer = setInterval(() => {
-          i = (i + 1) % srcs.length;
-          transcript.textContent = srcs[i] + '  →  ' + tls[i];
-        }, 2400);
+        timer = setInterval(() => { i = (i + 1) % srcs.length; transcript.textContent = srcs[i] + '  →  ' + tls[i]; }, 2400);
       } else {
         updateWave(false); setState(false);
         transcript.classList.remove('speaking');
-        transcript.textContent = 'Tap Start to simulate a live translation…';
+        transcript.textContent = I18N[LANG]['demo.placeholder'];
         clearInterval(timer);
       }
     });
-
     document.getElementById('swap').addEventListener('click', () => {
       const a = document.getElementById('from'), b = document.getElementById('to');
       const tmp = a.value; a.value = b.value; b.value = tmp;
@@ -350,7 +389,7 @@
       requestAnimationFrame(step);
     }
 
-    // ===== Scroll reveal (IntersectionObserver) =====
+    // ===== Scroll reveal =====
     const io = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) {
@@ -360,10 +399,10 @@
         }
       });
     }, { threshold: 0.2 });
-
     document.querySelectorAll('.reveal, .steps li').forEach(el => io.observe(el));
 
     // ===== Init =====
+    applyLang();
     document.querySelector('.kicker').classList.add('in');
     setTimeout(type, 400);
   </script>
