@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Speech Translator — AI Speech-to-Speech</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card: #111a33;
+      --accent: #38bdf8;
+      --accent2: #a78bfa;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, #1e293b 0%, var(--bg) 55%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 60px 24px; }
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      letter-spacing: 0.5px;
+    }
+    h1 {
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      font-weight: 800;
+      margin: 22px 0 12px;
+      letter-spacing: -0.5px;
+    }
+    h1 .grad {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .sub { color: var(--muted); font-size: 1.15rem; max-width: 620px; margin-bottom: 40px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+    .card {
+      background: var(--card);
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 22px;
+    }
+    .card h3 { font-size: 1.05rem; margin-bottom: 8px; color: var(--accent); }
+    .card p { color: var(--muted); font-size: 0.95rem; }
+    .status {
+      margin-top: 44px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #22c55e; }
+    .status span { color: var(--muted); font-size: 0.95rem; }
+    footer { margin-top: 60px; color: var(--muted); font-size: 0.85rem; text-align: center; }
+    a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <span class="badge">Real-time · English ⇄ Indonesian · Multi-language</span>
+    <h1>AI <span class="grad">Speech-to-Speech</span> Live Translator</h1>
+    <p class="sub">
+      Bidirectional voice translation &amp; dubbing for Zoom, Teams &amp; Slack.
+      Speech-in → transcribe → translate → natural voice out, in near real time.
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>⚡ Low Latency</h3>
+        <p>Streaming STT/NMT/TTS pipeline tuned toward ~2–3s end-to-end for short utterances.</p>
+      </div>
+      <div class="card">
+        <h3>🎙️ Bidirectional</h3>
+        <p>Two-way voice translation with VAD, speaker diarization &amp; echo suppression.</p>
+      </div>
+      <div class="card">
+        <h3>🔒 Secure by Default</h3>
+        <p>CORS allowlist, WebSocket token auth, no hardcoded API keys, env-only secrets.</p>
+      </div>
+      <div class="card">
+        <h3>🧠 Custom Glossary</h3>
+        <p>~370 curated EN⇄ID business &amp; technical terms, 98.6% benchmark accuracy.</p>
+      </div>
+    </div>
+
+    <div class="status">
+      <span class="dot"></span>
+      <span>This is a static landing page hosted on GitHub Pages — the app backend runs separately.</span>
+    </div>
+
+    <footer>
+      <a href="https://github.com/Erlandfatur/Speech-Translator-enterprise">Source on GitHub</a>
+      &nbsp;·&nbsp; © Erlandfatur
+    </footer>
+  </div>
+</body>
+</html>
