@@ -1,5 +1,7 @@
 # 🎙️ Speech Translator — AI Speech-to-Speech Live Translator
 
+> 🌍 **Bahasa:** [🇮🇩 Indonesia](README.md) · [🇬🇧 English](README.en.md)
+
 Bidirectional **real-time voice translation & dubbing** for meetings (English ⇄ Indonesian & multi-language). Speech-in → transcribe → translate → natural voice-out, built for Zoom, Teams & Slack workflows.
 
 > 🌐 **Landing Page:** https://erlandfatur.github.io/Speech-Translator-enterprise/ — interaktif, bilingual (EN/ID)
