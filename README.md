@@ -53,6 +53,8 @@ pip install -r requirements.txt
 cp .env.example .env            # lalu isi GROQ_API_KEY & GEMINI_API_KEY
 ```
 
+> **Skrip cepat (lokal):** jalankan `setup_local.bat` lalu `run_local.bat` (Windows), atau `bash setup_local.sh` / `bash run_local.sh` (Git Bash/Linux/macOS). Skrip otomatis buat venv + install deps + buat `.env`.
+
 ### Jalankan
 ```bash
 python main.py
