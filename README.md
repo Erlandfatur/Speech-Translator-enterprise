@@ -103,6 +103,20 @@ Variabel opsional untuk tuning latensi (`.env.example`):
 - **`.github/workflows/ci.yml`** — lint & build extension (oxlint, tsc, vite) + Python compile smoke test
 - **`.github/workflows/pages.yml`** — deploy landing page ke GitHub Pages (folder `docs/`)
 
+## ☁️ Deploy Backend ke Render
+
+Repositori sudah menyertakan `render.yaml` (Blueprint). Langkah:
+
+1. Buka [render.com](https://render.com) → **New** → **Blueprint** → pilih repo ini.
+2. Render membaca `render.yaml` → membuat Web Service `speech-translator` dari `server/`.
+3. **Set secrets** di service (Settings → Environment):
+   `GROQ_API_KEY`, `GEMINI_API_KEY`, `WS_API_TOKEN`.
+4. **ALLOWED_ORIGINS** — isi dengan origin landing page/extension (mis. `https://erlandfatur.github.io`).
+5. Build & deploy otomatis. URL akan seperti `https://speech-translator.onrender.com`.
+   Health check: `https://speech-translator.onrender.com/health` → `{"status":"ok"}`.
+
+> **Catatan:** paket `torch`, `sounddevice`, `piper-tts`, `faster-whisper` cukup berat; pakai plan ber-MEMORY cukup. Jika hanya perlu STT/NMT/TTS via API Groq/Edge, matikan fallback lokal yang berat.
+
 ## 🔒 Keamanan
 
 - API key **hanya di `.env`** (tidak ter-commit — di `.gitignore`)

@@ -24,6 +24,11 @@ app = FastAPI(
     description="WebSocket Gateway for 1-on-1 Meeting Speech-to-Speech & Speech-to-Text Translation"
 )
 
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
 # Allowlist: Chrome extension IDs (set via env) + localhost dev origins.
 # NOTE: MV3 extensions have origin "chrome-extension://<EXTENSION_ID>".
 import os
@@ -353,7 +358,9 @@ async def websocket_translate_endpoint(websocket: WebSocket):
         logger.error(f"WebSocket error: {e}")
 
 if __name__ == "__main__":
+    import os
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
 
 

@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: speech-translator
+    runtime: python
+    rootDir: server
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: WS_API_TOKEN
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: '*'
+      - key: BUFFER_MAX_SEC
+        value: '8.0'
+      - key: BUFFER_MIN_SEC
+        value: '1.5'
+      - key: SILENCE_FLUSH_SEC
+        value: '0.6'
+      - key: GROQ_COOLDOWN_SEC
+        value: '0.8'
+      - key: BUFFER_TAB_FLUSH_SEC
+        value: '2.0'

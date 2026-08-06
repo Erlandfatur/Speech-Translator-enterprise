@@ -103,6 +103,20 @@ Optional variables for latency tuning (`.env.example`):
 - **`.github/workflows/ci.yml`** — lint & build extension (oxlint, tsc, vite) + Python compile smoke test
 - **`.github/workflows/pages.yml`** — deploy landing page to GitHub Pages (`docs/` folder)
 
+## ☁️ Deploying the Backend to Render
+
+The repo includes a `render.yaml` (Blueprint). Steps:
+
+1. Go to [render.com](https://render.com) → **New** → **Blueprint** → select this repo.
+2. Render reads `render.yaml` → creates the `speech-translator` Web Service from `server/`.
+3. **Set secrets** in the service (Settings → Environment):
+   `GROQ_API_KEY`, `GEMINI_API_KEY`, `WS_API_TOKEN`.
+4. **ALLOWED_ORIGINS** — fill with your landing page/extension origin (e.g. `https://erlandfatur.github.io`).
+5. Build & deploy automatically. URL will look like `https://speech-translator.onrender.com`.
+   Health check: `https://speech-translator.onrender.com/health` → `{"status":"ok"}`.
+
+> **Note:** `torch`, `sounddevice`, `piper-tts`, `faster-whisper` are heavy; use a plan with enough memory. If you only need STT/NMT/TTS via Groq/Edge APIs, disable heavy local fallbacks.
+
 ## 🔒 Security
 
 - API keys **only in `.env`** (not committed — in `.gitignore`)
