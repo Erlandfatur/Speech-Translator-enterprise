@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+venv/
+.env
+models/*
+!models/.gitkeep
+test*.mp3
+test_client.py
+list_models.py
+eval_pipeline.py
+test_full_pipeline.py

@@ -117,6 +117,16 @@ The repo includes a `render.yaml` (Blueprint). Steps:
 
 > **Note:** `torch`, `sounddevice`, `piper-tts`, `faster-whisper` are heavy; use a plan with enough memory. If you only need STT/NMT/TTS via Groq/Edge APIs, disable heavy local fallbacks.
 
+### Alternative: Fly.io
+
+`server/` also includes a `Dockerfile` & `fly.toml`. Steps:
+
+1. Install & login to the [Fly CLI](https://fly.io/docs/flyctl/): `flyctl auth login`.
+2. From `server/`: `flyctl launch` (follow the wizard, reuse the existing `fly.toml`).
+3. Set secrets: `flyctl secrets set GROQ_API_KEY=... GEMINI_API_KEY=... WS_API_TOKEN=...`.
+4. Deploy: `flyctl deploy`.
+5. URL becomes `https://speech-translator.fly.dev` (health: `/health`).
+
 ## 🔒 Security
 
 - API keys **only in `.env`** (not committed — in `.gitignore`)
