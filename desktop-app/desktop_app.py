@@ -145,7 +145,7 @@ class TranslatorApp:
                  bg=PAPER, fg=FAINT, font=("Segoe UI", 8)).pack(anchor="w", pady=(4, 0))
 
         # ---- Primary action ----
-        act = tk.Frame(self.root, bg=PAPER, padx=24, pady=(4, 14))
+        act = tk.Frame(self.root, bg=PAPER, padx=24, pady=14)
         act.pack(fill="x")
         self.btn = tk.Button(act, text="Mulai", command=self.toggle,
                              bg=INK, fg=CARD, activebackground="#000000", activeforeground=CARD,
@@ -154,7 +154,7 @@ class TranslatorApp:
         self.btn.pack(fill="x")
 
         # ---- Transcripts ----
-        subs = tk.Frame(self.root, bg=PAPER, padx=24, pady=(0, 16))
+        subs = tk.Frame(self.root, bg=PAPER, padx=24, pady=8)
         subs.pack(fill="both", expand=True)
         self.mic_card, self.mic_label = self._sub_card(subs, "Anda")
         self.tab_card, self.tab_label = self._sub_card(subs, "Lawan bicara")
@@ -192,7 +192,7 @@ class TranslatorApp:
         card = self.tk.Frame(parent, bg=CARD, highlightthickness=1,
                              highlightbackground=LINE, highlightcolor=LINE)
         card.pack(fill="x", pady=4)
-        head = self.tk.Frame(card, bg=CARD, padx=14, pady=(10, 2))
+        head = self.tk.Frame(card, bg=CARD, padx=14, pady=10)
         head.pack(fill="x")
         tk.Label(head, text=caption.upper(), bg=CARD, fg=MUTE,
                  font=FONT_CAPS).pack(side="left")
