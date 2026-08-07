@@ -193,7 +193,7 @@ class TranslatorApp:
                     self._entry(keys_inner, self.var_gemini))
         keys_inner.columnconfigure(1, weight=1)
         tk.Label(keys, text="Kunci hanya disimpan di memori & tidak pernah ditulis ke disk.",
-                 bg=CARD, fg=FAINT, font=("Segoe UI", 8), padx=18, pady=(0, 8)).pack(anchor="w")
+                 bg=CARD, fg=FAINT, font=("Segoe UI", 8), padx=18, pady=8).pack(anchor="w")
 
         # ---------------- Primary action ----------------
         self.btn = tk.Button(body, text="Mulai", command=self.toggle,
