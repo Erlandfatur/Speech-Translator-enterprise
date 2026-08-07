@@ -1,0 +1,9 @@
+# Lightweight deps for the self-contained desktop app / EXE.
+# No torch / faster-whisper / piper needed: all AI is cloud (BYOK Groq/Gemini/Edge-TTS).
+numpy>=1.24.0
+soundcard>=0.4.3
+soundfile>=0.12.1
+edge-tts>=7.0.0
+groq>=0.4.0
+google-genai>=0.2.0
+python-dotenv>=1.0.0

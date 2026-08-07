@@ -86,6 +86,18 @@ python test_full_pipeline.py   # Test pipeline end-to-end
 - **Test lulus (≥90%):** 5/5
 - **Latensi NMT rata-rata:** ~468 ms
 
+## 🖥️ Aplikasi Desktop (EXE, BYOK)
+
+`desktop-app/` — aplikasi desktop Windows mandiri, tanpa Python/server lokal. User
+memakai **kunci API AI-nya sendiri (BYOK)** untuk STT/NMT/TTS.
+
+```bash
+cd desktop-app
+build_app.bat                 # hasil: dist/SpeechTranslator.exe (~37 MB)
+```
+
+Lihat `desktop-app/README.md`.
+
 ## ⚙️ Konfigurasi Env
 
 Variabel opsional untuk tuning latensi (`.env.example`):

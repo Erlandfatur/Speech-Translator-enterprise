@@ -129,9 +129,15 @@ SILENCE_FLUSH_SEC = float(os.getenv("SILENCE_FLUSH_SEC", "0.6"))           # Flu
 GROQ_COOLDOWN_SEC = float(os.getenv("GROQ_COOLDOWN_SEC", "1.5"))           # Min gap between calls (was 0.8) – avoids 429
 BUFFER_TAB_FLUSH_SEC = float(os.getenv("BUFFER_TAB_FLUSH_SEC", "4.0"))     # Tab audio fixed flush window (was 2.0) – more context for STT
 
-# Whitelist of client-settable config keys. API keys are EXCLUDED so remote
-# clients cannot inject their own credentials (multi-tenant abuse) — the server
-# always uses its own env keys.
+# Bring-Your-Own-Key: when enabled, authenticated users may supply their OWN
+# Groq/Gemini API keys per-session (in-memory only). Those keys are then used for
+# that user's STT/NMT so AI cost is billed to the user, not the server operator.
+# Default OFF: server always uses its own env keys (fail-closed).
+BYOK_ENABLED = os.getenv("BYOK_ENABLED", "false").lower() in ("1", "true", "yes")
+
+# Whitelist of client-settable config keys. API keys are EXCLUDED by default so
+# remote clients cannot inject their own credentials (multi-tenant abuse).
+# When BYOK is enabled, Groq/Gemini keys are additionally allowed per-session.
 ALLOWED_CONFIG_KEYS = {
     "capture_mode",
     "spoken_lang",
@@ -144,6 +150,11 @@ ALLOWED_CONFIG_KEYS = {
     "tab_spoken_lang",
     "tab_target_lang",
 }
+
+if BYOK_ENABLED:
+    # Only allow BYOK key fields (still validated/used per-session, never logged).
+    ALLOWED_CONFIG_KEYS.add("groq_api_key")
+    ALLOWED_CONFIG_KEYS.add("gemini_api_key")
 
 
 class UserSession:
@@ -255,11 +266,18 @@ async def websocket_translate_endpoint(websocket: WebSocket):
 
             if msg_type == "config":
                 incoming = message.get("config", {})
-                # Only apply whitelisted keys; silently drop anything else
-                # (e.g. client-supplied groq_api_key / gemini_api_key).
+                # Only apply whitelisted keys; silently drop anything else.
+                # API keys are only accepted when BYOK is enabled (per-session).
                 filtered = {k: v for k, v in incoming.items() if k in ALLOWED_CONFIG_KEYS}
                 session.config.update(filtered)
-                logger.info(f"Updated user config (filtered): {session.config}")
+                # Never log raw API keys.
+                log_cfg = dict(session.config)
+                if BYOK_ENABLED:
+                    if log_cfg.get("groq_api_key"):
+                        log_cfg["groq_api_key"] = "***"
+                    if log_cfg.get("gemini_api_key"):
+                        log_cfg["gemini_api_key"] = "***"
+                logger.info(f"Updated user config (filtered): {log_cfg}")
                 
             elif msg_type in ["audio_chunk_mic", "audio_chunk_tab"]:
                 b64_audio = message.get("audio_b64", "")
@@ -368,8 +386,11 @@ async def websocket_translate_endpoint(websocket: WebSocket):
 
                 async def run_pipeline(pcm, src, tgt, sl, mt, te, now_ts):
                     try:
+                        # BYOK: use the user's own Groq key if provided, else server key.
+                        byok_groq = session.config.get("groq_api_key") or None
+                        byok_gemini = session.config.get("gemini_api_key") or None
                         original_text, stt_lat = await asyncio.to_thread(
-                            stt_engine.transcribe_chunk, pcm, 16000, src
+                            stt_engine.transcribe_chunk, pcm, 16000, src, byok_groq
                         )
                         clean_text = original_text.strip()
                         if not clean_text or clean_text in [".", "..", "..."]:
@@ -407,7 +428,7 @@ async def websocket_translate_endpoint(websocket: WebSocket):
 
 
                         translated_text, nmt_lat = await asyncio.to_thread(
-                            nmt_engine.translate, original_text, src, tgt
+                            nmt_engine.translate, original_text, src, tgt, byok_groq, byok_gemini
                         )
                         logger.info(f"[{sl} NMT ({nmt_lat*1000:.1f}ms)]: {translated_text}")
 

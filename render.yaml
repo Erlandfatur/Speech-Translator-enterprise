@@ -20,6 +20,8 @@ services:
         value: speech-translator
       - key: AUTH_MAX_TOKEN_TTL
         value: '86400'
+      - key: BYOK_ENABLED
+        value: 'false'
       - key: ALLOWED_ORIGINS
         value: '*'
       - key: RATE_LIMIT_PER_MINUTE
