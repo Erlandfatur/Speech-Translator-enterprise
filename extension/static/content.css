@@ -1,0 +1,219 @@
+/* Minimalist Monochrome Overlay Styles for Real-Time Speech Translator */
+
+.st-overlay-container {
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  width: 420px;
+  max-width: 92vw;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+  color: #FFFFFF;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  z-index: 999999;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.st-overlay-container.minimized {
+  width: 320px;
+}
+
+.st-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.st-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.st-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #555555;
+  transition: background 0.3s;
+}
+
+.st-dot.active {
+  background: #FFFFFF;
+  box-shadow: 0 0 8px rgba(255,255,255,0.8);
+}
+
+.st-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #FFFFFF;
+}
+
+.st-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.st-icon-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #AAAAAA;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.st-icon-btn:hover {
+  background: #FFFFFF;
+  color: #000000;
+}
+
+.st-platform-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #DDDDDD;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.st-body-content {
+  padding: 16px;
+  background: transparent;
+}
+
+.st-transcript-list {
+  min-height: 100px;
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 4px;
+}
+
+.st-transcript-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.st-transcript-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.st-transcript-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+.st-placeholder {
+  font-size: 12px;
+  color: #888888;
+  text-align: center;
+  padding: 32px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.st-placeholder p {
+  margin: 0 0 6px 0;
+  font-weight: 500;
+  color: #AAAAAA;
+}
+
+.st-placeholder small {
+  color: #666666;
+}
+
+.st-transcript-card {
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  animation: stFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.st-card-own {
+  border-left: 2px solid #FFFFFF;
+}
+
+.st-card-peer {
+  border-left: 2px solid #666666;
+}
+
+.st-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.st-speaker-tag {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #CCCCCC;
+}
+
+.st-card-meta {
+  font-size: 10px;
+  color: #777777;
+}
+
+.st-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.st-translated-text {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #FFFFFF;
+}
+
+.st-original-text {
+  font-size: 11px;
+  color: #888888;
+}
+
+.st-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 11px;
+  color: #888888;
+}
+
+.st-badge, .st-count-badge {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 3px 6px;
+  border-radius: 4px;
+  color: #DDDDDD;
+  font-weight: 500;
+}
+
+@keyframes stFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
