@@ -146,10 +146,10 @@ class TranslatorApp:
             self.var_tts.set(self.devices["speakers"][0][1])
 
     def _row(self, parent, label, widget):
-        r = tk.Frame(parent, bg="#1e1e1e")
+        r = self.tk.Frame(parent, bg="#1e1e1e")
         r.pack(fill="x", pady=2)
-        tk.Label(r, text=label, width=22, anchor="w", bg="#1e1e1e", fg="#cccccc",
-                 font=("Segoe UI", 9)).pack(side="left")
+        self.tk.Label(r, text=label, width=22, anchor="w", bg="#1e1e1e", fg="#cccccc",
+                      font=("Segoe UI", 9)).pack(side="left")
         widget.pack(side="left", fill="x", expand=True)
 
     def _combo(self, parent, var, items):
