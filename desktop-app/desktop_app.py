@@ -44,6 +44,20 @@ BUFFER_MAX_BYTES = int(RATE * 2 * 8.0)         # hard cap 8s
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger("DesktopTranslator")
 
+# ---- Minimalist monochrome palette (editorial, not "tech") ----
+INK       = "#1A1A1A"   # primary text / accents
+PAPER     = "#FAFAFA"   # window background (soft white)
+CARD      = "#FFFFFF"   # cards / panels
+LINE      = "#E6E6E6"   # hairline borders
+MUTE      = "#8F8F8F"   # secondary text
+FAINT     = "#B8B8B8"   # placeholder / idle
+DOT_IDLE  = "#D9D9D9"
+DOT_ACTIVE = "#1A1A1A"
+FONT_HEAD = ("Georgia", 13)          # serif wordmark — elegant, non-techy
+FONT_TITLE = ("Segoe UI", 10, "bold")
+FONT_BODY  = ("Segoe UI", 9)
+FONT_CAPS  = ("Segoe UI", 7, "bold")
+
 
 def list_devices() -> dict:
     return {
@@ -75,67 +89,75 @@ class TranslatorApp:
 
         self._build_ui()
 
+    def _style(self):
+        style = self.ttk.Style(self.root)
+        style.theme_use("clam")
+        style.configure("TCombobox",
+                        fieldbackground=CARD, background=CARD,
+                        foreground=INK, arrowcolor=INK,
+                        bordercolor=LINE, lightcolor=LINE, darkcolor=LINE,
+                        padding=6)
+        style.map("TCombobox", fieldbackground=[("readonly", CARD)])
+        # Thin, underlined inputs.
+        self.root.option_add("*TCombobox*TEntry.borderWidth", 0)
+        self.root.option_add("*TCombobox*TEntry.selectBackground", "#1A1A1A")
+
     def _build_ui(self):
         tk, ttk = self.tk, self.ttk
-        self.root.title("Speech Translator — Desktop (BYOK)")
-        self.root.geometry("780x580")
-        self.root.configure(bg="#111111")
+        self._style()
+        self.root.title("Speech Translator")
+        self.root.geometry("760x600")
+        self.root.configure(bg=PAPER)
 
-        tk.Label(self.root, text="Speech Translator — Desktop (BYOK)",
-                 bg="#1b1b1b", fg="#ffffff", font=("Segoe UI", 14, "bold"),
-                 padx=12, pady=10, anchor="w").pack(fill="x")
+        # ---- Masthead (serif wordmark, restrained) ----
+        mast = tk.Frame(self.root, bg=CARD, padx=24, pady=16)
+        mast.pack(fill="x")
+        tk.Label(mast, text="Speech Translator", bg=CARD, fg=INK,
+                 font=FONT_HEAD).pack(side="left")
+        tk.Label(mast, text="real-time translation", bg=CARD, fg=FAINT,
+                 font=FONT_CAPS).pack(side="left", padx=(12, 0), pady=(4, 0))
+        self.dot = tk.Label(mast, width=2, bg=DOT_IDLE)
+        self.dot.pack(side="right", padx=(0, 4), ipady=4)
+        self.status = tk.Label(mast, text="Idle", bg=CARD, fg=MUTE, font=FONT_BODY)
+        self.status.pack(side="right")
+        tk.Frame(self.root, bg=LINE, height=1).pack(fill="x")
 
-        form = tk.Frame(self.root, bg="#1e1e1e", padx=12, pady=8)
+        # ---- Settings card ----
+        form = tk.Frame(self.root, bg=PAPER, padx=24, pady=14)
         form.pack(fill="x")
 
         self.var_mic = tk.StringVar()
-        self._row(form, "Mikrofon (Anda)",
-                  self._combo(form, self.var_mic, [n for _, n in self.devices["mics"]]))
-
+        self._row(form, "Mikrofon", self._combo(form, self.var_mic, [n for _, n in self.devices["mics"]]))
         self.var_loop = tk.StringVar()
-        self._row(form, "System audio (Lawan)",
-                  self._combo(form, self.var_loop, [n for _, n in self.devices["loopbacks"]]))
-
+        self._row(form, "System audio", self._combo(form, self.var_loop, [n for _, n in self.devices["loopbacks"]]))
         self.var_tts = tk.StringVar()
-        self._row(form, "Output Suara Terjemahan",
-                  self._combo(form, self.var_tts, [n for _, n in self.devices["speakers"]]))
-
+        self._row(form, "Suara terjemahan", self._combo(form, self.var_tts, [n for _, n in self.devices["speakers"]]))
         self.var_src = tk.StringVar(value="en")
-        self._row(form, "Bahasa Asal", self._combo(form, self.var_src, ["en", "id"]))
-
+        self._row(form, "Bahasa asal", self._combo(form, self.var_src, ["en", "id"]))
         self.var_tgt = tk.StringVar(value="id")
-        self._row(form, "Bahasa Terjemahan", self._combo(form, self.var_tgt, ["id", "en"]))
+        self._row(form, "Bahasa target", self._combo(form, self.var_tgt, ["id", "en"]))
 
         self.var_groq = tk.StringVar()
-        self._row(form, "Groq API Key (BYOK)",
-                  tk.Entry(form, textvariable=self.var_groq, show="*",
-                           bg="#2a2a2a", fg="#ffffff", insertbackground="#ffffff"))
-
+        self._row(form, "Groq key", self._entry(form, self.var_groq))
         self.var_gemini = tk.StringVar()
-        self._row(form, "Gemini API Key (opsional)",
-                  tk.Entry(form, textvariable=self.var_gemini, show="*",
-                           bg="#2a2a2a", fg="#ffffff", insertbackground="#ffffff"))
+        self._row(form, "Gemini key", self._entry(form, self.var_gemini, hint="opsional"))
+        tk.Label(form, text="Kunci API hanya disimpan di memori, tidak ditulis ke disk.",
+                 bg=PAPER, fg=FAINT, font=("Segoe UI", 8)).pack(anchor="w", pady=(4, 0))
 
-        btns = tk.Frame(self.root, bg="#1e1e1e", pady=6)
-        btns.pack(fill="x")
-        self.btn = tk.Button(btns, text="Start", command=self.toggle, bg="#3a3a3a", fg="#ffffff",
-                             activebackground="#555555", activeforeground="#ffffff",
-                             font=("Segoe UI", 10, "bold"), padx=20)
-        self.btn.pack(side="left", padx=12)
-        self.status = tk.Label(btns, text="Idle", bg="#1e1e1e", fg="#4f8ef7", font=("Segoe UI", 9))
-        self.status.pack(side="left", padx=10)
+        # ---- Primary action ----
+        act = tk.Frame(self.root, bg=PAPER, padx=24, pady=(4, 14))
+        act.pack(fill="x")
+        self.btn = tk.Button(act, text="Mulai", command=self.toggle,
+                             bg=INK, fg=CARD, activebackground="#000000", activeforeground=CARD,
+                             relief="flat", bd=0, font=("Segoe UI", 10, "bold"),
+                             padx=10, pady=8, cursor="hand2")
+        self.btn.pack(fill="x")
 
-        subs = tk.Frame(self.root, bg="#111111", padx=12, pady=8)
+        # ---- Transcripts ----
+        subs = tk.Frame(self.root, bg=PAPER, padx=24, pady=(0, 16))
         subs.pack(fill="both", expand=True)
-
-        self.mic_label = tk.Label(subs, text="SUARA ANDA (MIC)", anchor="w", justify="left",
-                                  bg="#181818", fg="#4f8ef7", font=("Segoe UI", 10, "bold"),
-                                  wraplength=700, padx=10, pady=8)
-        self.mic_label.pack(fill="x", pady=3)
-        self.tab_label = tk.Label(subs, text="LAWAN BICARA (SYSTEM)", anchor="w", justify="left",
-                                  bg="#181818", fg="#3ddc84", font=("Segoe UI", 10, "bold"),
-                                  wraplength=700, padx=10, pady=8)
-        self.tab_label.pack(fill="x", pady=3)
+        self.mic_card, self.mic_label = self._sub_card(subs, "Anda")
+        self.tab_card, self.tab_label = self._sub_card(subs, "Lawan bicara")
 
         # Pre-select sensible defaults.
         if self.devices["mics"]:
@@ -146,15 +168,40 @@ class TranslatorApp:
             self.var_tts.set(self.devices["speakers"][0][1])
 
     def _row(self, parent, label, widget):
-        r = self.tk.Frame(parent, bg="#1e1e1e")
-        r.pack(fill="x", pady=2)
-        self.tk.Label(r, text=label, width=22, anchor="w", bg="#1e1e1e", fg="#cccccc",
-                      font=("Segoe UI", 9)).pack(side="left")
+        r = self.tk.Frame(parent, bg=PAPER)
+        r.pack(fill="x", pady=3)
+        self.tk.Label(r, text=label, width=20, anchor="w", bg=PAPER, fg=MUTE,
+                      font=FONT_BODY).pack(side="left")
         widget.pack(side="left", fill="x", expand=True)
 
     def _combo(self, parent, var, items):
-        cb = self.ttk.Combobox(parent, textvariable=var, values=items, state="readonly")
+        cb = self.ttk.Combobox(parent, textvariable=var, values=items,
+                               state="readonly", font=FONT_BODY)
         return cb
+
+    def _entry(self, parent, var, hint=""):
+        e = self.tk.Entry(parent, textvariable=var, show="*" if not hint else "",
+                          relief="flat", bd=0, highlightthickness=1,
+                          highlightbackground=LINE, highlightcolor=INK,
+                          bg=CARD, fg=INK, insertbackground=INK, font=FONT_BODY)
+        if hint:
+            e.configure(show="*")
+        return e
+
+    def _sub_card(self, parent, caption):
+        card = self.tk.Frame(parent, bg=CARD, highlightthickness=1,
+                             highlightbackground=LINE, highlightcolor=LINE)
+        card.pack(fill="x", pady=4)
+        head = self.tk.Frame(card, bg=CARD, padx=14, pady=(10, 2))
+        head.pack(fill="x")
+        tk.Label(head, text=caption.upper(), bg=CARD, fg=MUTE,
+                 font=FONT_CAPS).pack(side="left")
+        tk.Frame(card, bg=LINE, height=1).pack(fill="x", padx=14)
+        body = self.tk.Label(card, text="—", anchor="w", justify="left",
+                             bg=CARD, fg=INK, font=("Georgia", 11),
+                             wraplength=640, padx=14, pady=10)
+        body.pack(fill="x")
+        return card, body
 
     # ---------- Capture ----------
     def _capture_loop(self, rec, key, flush_bytes):
@@ -266,14 +313,16 @@ class TranslatorApp:
 
     def start(self):
         if not (self.var_groq.get() or "").strip():
-            self.status.configure(text="Groq API key diperlukan (BYOK)", fg="#ff6b6b")
+            self.status.configure(text="Perlu Groq key", fg=INK)
+            self.dot.configure(bg=DOT_IDLE)
             return
         mic_idx = self._index_of(self.devices["mics"], self.var_mic.get())
         loop_idx = self._index_of(self.devices["loopbacks"], self.var_loop.get())
         self._stop.clear()
         self.running = True
         self.btn.configure(text="Stop")
-        self.status.configure(text="Running…", fg="#3ddc84")
+        self.status.configure(text="Menerjemahkan", fg=INK)
+        self.dot.configure(bg=DOT_ACTIVE)
 
         mics = sc.all_microphones()
         loops = sc.all_microphones(include_loopback=True)
@@ -298,8 +347,9 @@ class TranslatorApp:
     def stop(self):
         self.running = False
         self._stop.set()
-        self.btn.configure(text="Start")
-        self.status.configure(text="Stopped", fg="#4f8ef7")
+        self.btn.configure(text="Mulai")
+        self.status.configure(text="Berhenti", fg=MUTE)
+        self.dot.configure(bg=DOT_IDLE)
 
     def _index_of(self, items, name):
         for i, n in items:
