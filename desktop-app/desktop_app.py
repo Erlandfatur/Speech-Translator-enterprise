@@ -257,7 +257,7 @@ class TranslatorApp:
 
         body = tk.Label(inner, text="—", anchor="w", justify="left",
                         bg=CARD, fg=TEXT, font=("Segoe UI", 12),
-                        wraplength=700, pady=(8, 0))
+                        wraplength=700, pady=8)
         body.pack(fill="both", expand=True)
         return card, body
 
