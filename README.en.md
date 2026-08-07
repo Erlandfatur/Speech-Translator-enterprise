@@ -59,7 +59,7 @@ python main.py
 ```
 Server runs at `http://localhost:8000`, WebSocket at `ws://localhost:8000/ws/translate`.
 
-> **Auth (optional):** set `WS_API_TOKEN` in `.env`, then clients connect with `?token=<value>`. If empty, auth is disabled (dev mode).
+> **Auth (per-user, required):** set `AUTH_SECRET` in `.env` (server **fails closed** if empty). Issue per-user tokens via `POST /auth/token` with `Authorization: Bearer <ADMIN_API_KEY>`, then clients connect with `?token=<jwt>`. Revoke via `POST /auth/revoke`.
 
 ## 🖥️ Running the Extension (Dev)
 
@@ -96,7 +96,11 @@ Optional variables for latency tuning (`.env.example`):
 | `GROQ_COOLDOWN_SEC` | `0.8` | Gap between Groq calls |
 | `BUFFER_TAB_FLUSH_SEC` | `2.0` | Tab audio flush window |
 | `ALLOWED_ORIGINS` | localhost | CORS allowlist |
-| `WS_API_TOKEN` | *(empty)* | WebSocket auth |
+| `AUTH_SECRET` | *(required)* | HMAC secret for per-user JWTs |
+| `ADMIN_API_KEY` | *(required)* | Bearer key for `POST /auth/token` |
+| `USER_MONTHLY_CREDITS` | `0` (unlimited) | Per-user monthly usage cap |
+| `RATE_LIMIT_PER_MINUTE` | `120` | Per-user request rate limit |
+| `MAX_CONNECTIONS_PER_USER` | `2` | Per-user active connection cap |
 
 ## 🚦 CI/CD
 
@@ -110,7 +114,7 @@ The repo includes a `render.yaml` (Blueprint). Steps:
 1. Go to [render.com](https://render.com) → **New** → **Blueprint** → select this repo.
 2. Render reads `render.yaml` → creates the `speech-translator` Web Service from `server/`.
 3. **Set secrets** in the service (Settings → Environment):
-   `GROQ_API_KEY`, `GEMINI_API_KEY`, `WS_API_TOKEN`.
+   `GROQ_API_KEY`, `GEMINI_API_KEY`, `AUTH_SECRET`, `ADMIN_API_KEY`.
 4. **ALLOWED_ORIGINS** — fill with your landing page/extension origin (e.g. `https://erlandfatur.github.io`).
 5. Build & deploy automatically. URL will look like `https://speech-translator.onrender.com`.
    Health check: `https://speech-translator.onrender.com/health` → `{"status":"ok"}`.
@@ -123,7 +127,7 @@ The repo includes a `render.yaml` (Blueprint). Steps:
 
 1. Install & login to the [Fly CLI](https://fly.io/docs/flyctl/): `flyctl auth login`.
 2. From `server/`: `flyctl launch` (follow the wizard, reuse the existing `fly.toml`).
-3. Set secrets: `flyctl secrets set GROQ_API_KEY=... GEMINI_API_KEY=... WS_API_TOKEN=...`.
+3. Set secrets: `flyctl secrets set GROQ_API_KEY=... GEMINI_API_KEY=... AUTH_SECRET=... ADMIN_API_KEY=...`.
 4. Deploy: `flyctl deploy`.
 5. URL becomes `https://speech-translator.fly.dev` (health: `/health`).
 
@@ -131,7 +135,8 @@ The repo includes a `render.yaml` (Blueprint). Steps:
 
 - API keys **only in `.env`** (not committed — in `.gitignore`)
 - Strict CORS allowlist (`ALLOWED_ORIGINS`)
-- Optional WebSocket auth (`WS_API_TOKEN`)
+- **Per-user JWT auth** — server fails closed if `AUTH_SECRET` empty; tokens revocable
+- **Anti cost-abuse** — per-user rate limit, monthly quota, connection cap, message-size cap, pipeline semaphore
 - Client config is whitelisted (clients cannot inject API keys)
 - Echo suppression during TTS playback
 

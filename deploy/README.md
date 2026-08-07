@@ -19,7 +19,7 @@ Template `docker-compose.yml` untuk menjalankan **Speech Translator + project la
 ```bash
 # 1. Siapkan secrets translator
 cp ../server/.env.example ../server/.env
-nano ../server/.env      # isi GROQ_API_KEY, GEMINI_API_KEY, WS_API_TOKEN
+nano ../server/.env      # isi GROQ_API_KEY, GEMINI_API_KEY, AUTH_SECRET, ADMIN_API_KEY
 
 # 2. Database password
 cp .env.example .env

@@ -61,7 +61,7 @@ python main.py
 ```
 Server berjalan di `http://localhost:8000`, WebSocket di `ws://localhost:8000/ws/translate`.
 
-> **Auth (opsional):** set `WS_API_TOKEN` di `.env`, lalu klien konek dengan `?token=<value>`. Jika kosong, auth nonaktif (mode dev).
+> **Auth (per-user, wajib):** set `AUTH_SECRET` di `.env` (server **fail-closed** bila kosong). Keluarkan token per user via `POST /auth/token` dengan header `Authorization: Bearer <ADMIN_API_KEY>`, lalu klien konek dengan `?token=<jwt>`. Token bisa dicabut via `POST /auth/revoke`.
 
 ## 🖥️ Menjalankan Extension (Dev)
 
@@ -98,7 +98,11 @@ Variabel opsional untuk tuning latensi (`.env.example`):
 | `GROQ_COOLDOWN_SEC` | `0.8` | Jeda antar panggilan Groq |
 | `BUFFER_TAB_FLUSH_SEC` | `2.0` | Window flush audio tab |
 | `ALLOWED_ORIGINS` | localhost | CORS allowlist |
-| `WS_API_TOKEN` | *(kosong)* | Auth WebSocket |
+| `AUTH_SECRET` | *(wajib)* | HMAC secret untuk JWT per-user |
+| `ADMIN_API_KEY` | *(wajib)* | Bearer key untuk `POST /auth/token` |
+| `USER_MONTHLY_CREDITS` | `0` (unlimited) | Batas pemakaian bulanan per user |
+| `RATE_LIMIT_PER_MINUTE` | `120` | Rate-limit request per user |
+| `MAX_CONNECTIONS_PER_USER` | `2` | Batas koneksi aktif per user |
 
 ## 🚦 CI/CD
 
@@ -112,7 +116,7 @@ Repositori sudah menyertakan `render.yaml` (Blueprint). Langkah:
 1. Buka [render.com](https://render.com) → **New** → **Blueprint** → pilih repo ini.
 2. Render membaca `render.yaml` → membuat Web Service `speech-translator` dari `server/`.
 3. **Set secrets** di service (Settings → Environment):
-   `GROQ_API_KEY`, `GEMINI_API_KEY`, `WS_API_TOKEN`.
+   `GROQ_API_KEY`, `GEMINI_API_KEY`, `AUTH_SECRET`, `ADMIN_API_KEY`.
 4. **ALLOWED_ORIGINS** — isi dengan origin landing page/extension (mis. `https://erlandfatur.github.io`).
 5. Build & deploy otomatis. URL akan seperti `https://speech-translator.onrender.com`.
    Health check: `https://speech-translator.onrender.com/health` → `{"status":"ok"}`.
@@ -125,7 +129,7 @@ Repositori sudah menyertakan `render.yaml` (Blueprint). Langkah:
 
 1. Install & login [Fly CLI](https://fly.io/docs/flyctl/): `flyctl auth login`.
 2. Dari `server/`: `flyctl launch` (ikuti wizard, pakai `fly.toml` yang sudah ada).
-3. Set secrets: `flyctl secrets set GROQ_API_KEY=... GEMINI_API_KEY=... WS_API_TOKEN=...`.
+3. Set secrets: `flyctl secrets set GROQ_API_KEY=... GEMINI_API_KEY=... AUTH_SECRET=... ADMIN_API_KEY=...`.
 4. Deploy: `flyctl deploy`.
 5. URL menjadi `https://speech-translator.fly.dev` (health: `/health`).
 
@@ -133,7 +137,8 @@ Repositori sudah menyertakan `render.yaml` (Blueprint). Langkah:
 
 - API key **hanya di `.env`** (tidak ter-commit — di `.gitignore`)
 - CORS allowlist ketat (`ALLOWED_ORIGINS`)
-- Auth WebSocket opsional (`WS_API_TOKEN`)
+- **Auth per-user (JWT)** — server fail-closed jika `AUTH_SECRET` kosong; token bisa direvoke
+- **Anti cost-abuse** — rate-limit per user, kuota bulanan, batas koneksi, batas ukuran pesan, dan semaphore pipeline
 - Config klien di-whitelist (klien tidak bisa inject API key)
 - Echo suppression saat TTS playback
 

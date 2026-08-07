@@ -12,10 +12,28 @@ services:
         sync: false
       - key: GEMINI_API_KEY
         sync: false
-      - key: WS_API_TOKEN
+      - key: AUTH_SECRET
         sync: false
+      - key: ADMIN_API_KEY
+        sync: false
+      - key: AUTH_ISSUER
+        value: speech-translator
+      - key: AUTH_MAX_TOKEN_TTL
+        value: '86400'
       - key: ALLOWED_ORIGINS
         value: '*'
+      - key: RATE_LIMIT_PER_MINUTE
+        value: '120'
+      - key: RATE_LIMIT_BURST
+        value: '20'
+      - key: USER_MONTHLY_CREDITS
+        value: '0'
+      - key: MAX_CONNECTIONS_PER_USER
+        value: '2'
+      - key: MAX_WS_MSG_BYTES
+        value: '2097152'
+      - key: MAX_CONCURRENT_PIPELINES
+        value: '4'
       - key: BUFFER_MAX_SEC
         value: '8.0'
       - key: BUFFER_MIN_SEC

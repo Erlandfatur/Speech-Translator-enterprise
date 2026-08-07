@@ -158,7 +158,9 @@ Karena buffer menunggu 3 detik minimum (`BUFFER_MIN_BYTES = 16000*2*3.0`) dan ad
 |---|---|---|
 | `opencode.json` | API key NVIDIA hardcode diganti `{env:NVIDIA_API_KEY}` | ✅ |
 | `server/main.py` | CORS: `["*"]`+creds → allowlist via `ALLOWED_ORIGINS` (creds=False) | ✅ |
-| `server/main.py` | Auth WebSocket `/ws/translate` via `WS_API_TOKEN` (query `?token=`) | ✅ |
+| `server/main.py` | Auth WebSocket `/ws/translate` via **per-user JWT** (`auth.py`) — fail-closed | ✅ |
+| `server/auth.py` | JWT issue/verify + revoke (`AUTH_SECRET`, `ADMIN_API_KEY`) | ✅ |
+| `server/quotas.py` | Anti cost-abuse: rate-limit, kuota bulanan, batas koneksi, batas ukuran pesan, semaphore pipeline | ✅ |
 | `server/main.py` | Echo suppression: drop audio saat TTS playback + holdoff window | ✅ |
 | `.gitignore` (root) | Cegah `.env`, models, cache, node_modules ter-commit | ✅ |
 | `server/.env.example` | Template env vars (tanpa secret) | ✅ |
