@@ -194,9 +194,9 @@ class TranslatorApp:
         card.pack(fill="x", pady=4)
         head = self.tk.Frame(card, bg=CARD, padx=14, pady=10)
         head.pack(fill="x")
-        tk.Label(head, text=caption.upper(), bg=CARD, fg=MUTE,
+        self.tk.Label(head, text=caption.upper(), bg=CARD, fg=MUTE,
                  font=FONT_CAPS).pack(side="left")
-        tk.Frame(card, bg=LINE, height=1).pack(fill="x", padx=14)
+        self.tk.Frame(card, bg=LINE, height=1).pack(fill="x", padx=14)
         body = self.tk.Label(card, text="—", anchor="w", justify="left",
                              bg=CARD, fg=INK, font=("Georgia", 11),
                              wraplength=640, padx=14, pady=10)
